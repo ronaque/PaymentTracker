@@ -1,4 +1,4 @@
-# payment_tracker
+# Payment Tracker
 
 A Payment Tracker project.
 
