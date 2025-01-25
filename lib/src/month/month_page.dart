@@ -4,11 +4,12 @@ import 'package:payment_tracker/src/month/blocs/month_cubit.dart';
 import 'package:payment_tracker/src/month/blocs/month_state.dart';
 import 'package:payment_tracker/src/shared/date_utils.dart';
 import 'package:payment_tracker/src/shared/gasto_utils.dart';
-import 'package:payment_tracker/src/shared/repositories/GastoHelper.dart';
+import 'package:payment_tracker/src/shared/repositories/payment_helper.dart';
 import 'month_module.dart';
 
 class Month extends StatefulWidget {
   final DateTime data;
+
   const Month(this.data, {super.key});
 
   @override
@@ -17,7 +18,7 @@ class Month extends StatefulWidget {
 
 class _MonthState extends State<Month> {
   late DateTime date;
-  GastoHelper gastoHelper = GastoHelper();
+  PaymentHelper gastoHelper = PaymentHelper();
   Widget transactionsList = Container();
   List? toggled;
   MesCubit mesCubit = MesCubit();
@@ -72,14 +73,14 @@ class _MonthState extends State<Month> {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                '${state.gastos[index].data.day}',
+                                                '${state.gastos[index].date.day}',
                                                 style: const TextStyle(
                                                   fontSize: 14.0,
                                                 ),
                                               ),
                                               Text(
                                                 getShortMonthStr(state
-                                                    .gastos[index].data.month),
+                                                    .gastos[index].date.month),
                                                 style: const TextStyle(
                                                   fontSize: 10.0,
                                                 ),
@@ -101,7 +102,7 @@ class _MonthState extends State<Month> {
                                             8, 0, 0, 0),
                                         scrollDirection: Axis.horizontal,
                                         child: Text(
-                                            '${state.gastos[index].descricao}',
+                                            '${state.gastos[index].description}',
                                             style: const TextStyle(
                                               fontSize: 14.0,
                                             )),
@@ -122,12 +123,12 @@ class _MonthState extends State<Month> {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                        'R\$${state.gastos[index].quantidade.abs().toStringAsFixed(2)}',
+                                                        'R\$${state.gastos[index].amount.abs().toStringAsFixed(2)}',
                                                         style: TextStyle(
                                                           color: state
                                                                       .gastos[
                                                                           index]
-                                                                      .quantidade <
+                                                                      .amount <
                                                                   0
                                                               ? Colors.red
                                                               : Colors.green,
@@ -163,7 +164,7 @@ class _MonthState extends State<Month> {
                                                             );
                                                           } else {
                                                             return Text(
-                                                              '${state.gastos[index].parcelas}/${snapshot.data}',
+                                                              '${state.gastos[index].installments}/${snapshot.data}',
                                                               style:
                                                                   const TextStyle(
                                                                       fontSize:
@@ -182,10 +183,10 @@ class _MonthState extends State<Month> {
                                                     ],
                                                   )
                                                 : Text(
-                                                    'R\$${state.gastos[index].quantidade.abs().toStringAsFixed(2)}',
+                                                    'R\$${state.gastos[index].amount.abs().toStringAsFixed(2)}',
                                                     style: TextStyle(
                                                       color: state.gastos[index]
-                                                                  .quantidade <
+                                                                  .amount <
                                                               0
                                                           ? Colors.red
                                                           : Colors.green,

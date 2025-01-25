@@ -94,33 +94,31 @@ class _CardTagsState extends State<CardTags> {
   }
 
   Widget getDefaultTags() {
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(defaultTags.length, (index) {
-            final tagName = defaultTags.keys.toList()[index];
-            return GestureDetector(
-                onTap: () {
-                  widget.setSelected(tagName);
-                  setState(() {});
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.width * 0.12,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: getSelectedBoxColor(tagName),
-                      border: Border.all(color: Colors.blue),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: _getSelectedIcon(tagName),
-                  ),
-                ));
-          }),
-        ));
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(defaultTags.length, (index) {
+        final tagName = defaultTags.keys.toList()[index];
+        return GestureDetector(
+            onTap: () {
+              widget.setSelected(tagName);
+              setState(() {});
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.width * 0.12,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  color: getSelectedBoxColor(tagName),
+                  border: Border.all(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: _getSelectedIcon(tagName),
+              ),
+            ));
+      }),
+    );
   }
 
   Widget getTags() {

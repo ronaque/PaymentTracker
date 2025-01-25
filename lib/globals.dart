@@ -2,9 +2,12 @@ library globals;
 
 import 'package:flutter/material.dart';
 
-// List<String> tagsPadroes = ['gasolina', 'comida', 'gasto'];
 Map<String, dynamic> defaultTags = {
-  'gasolina': Icons.local_gas_station,
-  'comida': Icons.restaurant,
-  'gasto': Icons.paid
+  'gas': Icons.local_gas_station,
+  'food': Icons.restaurant,
+  'paid': Icons.paid,
+  'subscription': Icons.event_repeat,
+  'medication': Icons.medication,
+  'savings': Icons.savings,
+  'none': Icons.remove
 };

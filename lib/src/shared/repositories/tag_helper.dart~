@@ -1,7 +1,9 @@
 import 'package:payment_tracker/globals.dart';
-import 'package:payment_tracker/src/shared/repositories/DatabaseHelper.dart';
+import 'package:payment_tracker/src/shared/repositories/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:payment_tracker/src/shared/models/Tag.dart';
+import 'package:payment_tracker/src/shared/models/tag.dart';
+
+import '../tag_utils.dart';
 
 class TagHelper {
   Future<Database> get database async {
@@ -13,12 +15,12 @@ class TagHelper {
 
   Future<void> insertTag(Tag tag) async {
     Database? db = await database;
-    await db.insert('tags', tag.toMap());
+    await db.insert('tag', tag.toMap());
   }
 
   Future<List<Tag>> getAllTags() async {
     Database db = await database;
-    List<Map<String, Object?>>? maps = await db.query('tags');
+    List<Map<String, Object?>>? maps = await db.query('tag');
     return List.generate(maps.length, (i) {
       return Tag.fromMap(maps[i]);
     });
@@ -31,7 +33,7 @@ class TagHelper {
     String defaultTagsPlaceholders = defaultTagsList.map((e) => '?').join(', ');
 
     List<Map<String, Object?>> result = await db.rawQuery(
-      'SELECT * FROM tags WHERE nome NOT IN ($defaultTagsPlaceholders)',
+      'SELECT * FROM tag WHERE name NOT IN ($defaultTagsPlaceholders)',
       defaultTagsList,
     );
 
@@ -40,21 +42,21 @@ class TagHelper {
     });
   }
 
-  Future<Tag?> getTagByNome(String nome) async {
+  Future<Tag?> getTagByName(String name) async {
     Database db = await database;
 
     List<Map<String, Object?>>? result = await db.query(
-      'tags',
-      where: 'nome = ?',
-      whereArgs: [nome],
+      'tag',
+      where: 'name = ?',
+      whereArgs: [name],
       limit:
-          1, // Limita a consulta a um resultado, pois esperamos apenas uma tag com o nome específico
+          1,
     );
 
     if (result.isNotEmpty) {
       return Tag.fromMap(result.first);
     } else {
-      return null; // Retorna null se não encontrar nenhuma tag com o nome especificado
+      return null;
     }
   }
 
@@ -62,7 +64,7 @@ class TagHelper {
     Database db = await database;
 
     List<Map<String, Object?>>? result = await db.query(
-      'tags',
+      'tag',
       where: 'id = ?',
       whereArgs: [tagId],
       limit: 1,
@@ -79,13 +81,29 @@ class TagHelper {
     Database db = await database;
 
     List<Map<String, Object?>>? tagResult =
-        await db.query('tags', where: 'nome = ?', whereArgs: [tagName]);
+    await db.query('tag', where: 'name = ?', whereArgs: [tagName]);
     if (tagResult.isNotEmpty) {
       Object? tagId = tagResult.first['id'];
 
-      await db.delete('tags', where: 'id = ?', whereArgs: [tagId]);
+      await db.delete('tag', where: 'id = ?', whereArgs: [tagId]);
 
-      await db.delete('gastos', where: 'tag_id = ?', whereArgs: [tagId]);
+      List<Map<String, Object?>>? noneTagResult =
+      await db.query('tag', where: 'name = ?', whereArgs: ['none']);
+      if (noneTagResult.isNotEmpty) {
+        Object? noneTagId = noneTagResult.first['id'];
+
+        // Update payments with the specified tag to have the 'none' tag
+        await db.update('payment', {'tag_id': noneTagId},
+            where: 'tag_id = ?', whereArgs: [tagId]);
+      } else {
+        // Insert the 'none' tag if it doesn't exist
+        Tag tag = await createTag('none');
+        await db.insert('tag', tag.toMap());
+
+        // Update payments with the specified tag to have the 'none' tag
+        await db.update('payment', {'tag_id': tag.id},
+            where: 'tag_id = ?', whereArgs: [tagId]);
+      }
     }
   }
 }

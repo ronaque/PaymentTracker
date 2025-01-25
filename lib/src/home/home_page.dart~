@@ -5,7 +5,7 @@ import 'package:payment_tracker/src/month/month_page.dart';
 import 'package:payment_tracker/src/profile/profile_page.dart';
 import 'package:payment_tracker/src/resumo/resumo_page.dart';
 import 'package:payment_tracker/src/shared/image_utils.dart';
-import 'package:payment_tracker/src/shared/balance_utils.dart';
+import 'package:payment_tracker/src/shared/saldo_utils.dart';
 import 'home_module.dart';
 
 class Home extends StatefulWidget {

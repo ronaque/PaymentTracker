@@ -52,7 +52,7 @@ Future<List<Payment>> getAllPayments() async {
 
 Future<List<Payment>> getPaymentsByTagName(String tagName) async {
   PaymentHelper paymentHelper = PaymentHelper();
-  Tag? tag = await getTagByName(tagName);
+  Tag? tag = await getTagByNome(tagName);
   if (tag == null) {
     return [];
   }
