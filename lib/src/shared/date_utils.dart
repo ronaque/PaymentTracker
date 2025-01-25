@@ -1,4 +1,4 @@
-String getMonthName(int month) {
+String getMonthNameFromInt(int month) {
   switch (month) {
     case 1:
       return 'Janeiro';

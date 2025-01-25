@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:payment_tracker/src/month/month_page.dart';
 import 'package:payment_tracker/src/profile/profile_page.dart';
-import 'package:payment_tracker/src/resumo/resumo_page.dart';
-import 'package:payment_tracker/src/shared/image_utils.dart';
 import 'package:payment_tracker/src/shared/balance_utils.dart';
+import 'package:payment_tracker/src/shared/image_utils.dart';
+import 'package:payment_tracker/src/summary/summary_page.dart';
+
 import 'home_module.dart';
 
 class Home extends StatefulWidget {
@@ -19,7 +20,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   File? _imageFile;
   Image? image;
   late TabController _tabController;
-  Widget month = Month(DateTime.now());
+  Widget month = Month(DateTime.now(), true);
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       var resultImage = await loadImage(_imageFile, image);
       setState(() {
         image = resultImage;
-        month = Month(DateTime.now());
+        month = Month(DateTime.now(), true);
       });
     }
   }
@@ -121,7 +122,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 controller: _tabController,
                 children: [
                   month,
-                  const Resumo(),
+                  const SummaryPage(),
                 ],
               ),
             ),

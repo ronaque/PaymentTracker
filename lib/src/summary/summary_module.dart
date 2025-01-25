@@ -1,0 +1,134 @@
+import 'package:flutter/cupertino.dart';
+import 'package:payment_tracker/src/summary/blocs/summary_cubit.dart';
+
+import '../shared/date_utils.dart';
+import '../shared/balance_utils.dart';
+
+void subtractMonth(SummaryCubit cubit) {
+  DateTime cubitDate = cubit.getDate();
+  if (cubitDate.month == 1) {
+    cubitDate = DateTime(cubitDate.year - 1, 12, cubitDate.day);
+  } else {
+    cubitDate = DateTime(cubitDate.year, cubitDate.month - 1, cubitDate.day);
+  }
+  cubit.setDate(cubitDate);
+
+  String monthName = getMonthNameFromInt(cubitDate.month);
+  cubit.setMonthName(monthName);
+}
+
+void addMonth(SummaryCubit cubit) {
+  DateTime cubitDate = cubit.getDate();
+  if (cubitDate.month == 12) {
+    cubitDate = DateTime(cubitDate.year + 1, 1, cubitDate.day);
+  } else {
+    cubitDate = DateTime(cubitDate.year, cubitDate.month + 1, cubitDate.day);
+  }
+  cubit.setDate(cubitDate);
+
+  String monthName = getMonthNameFromInt(cubitDate.month);
+  cubit.setMonthName(monthName);
+}
+
+void setMonthName(SummaryCubit cubit, String monthName) {
+  cubit.setMonthName(monthName);
+}
+
+Future<Widget> getMonthBalanceText(SummaryCubit cubit) async {
+  DateTime date = cubit.getDate();
+  double balance = await getMonthBalance(date);
+  if (balance < 0) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          const TextSpan(
+              text: "Saldo do mês: ",
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: CupertinoColors.black)),
+          TextSpan(
+            text: "R\$" + balance.toStringAsFixed(2),
+            style: const TextStyle(color: CupertinoColors.systemRed),
+          ),
+        ],
+      ),
+    );
+  }
+  return RichText(
+    text: TextSpan(
+      children: [
+        const TextSpan(
+            text: "Saldo do mês: ",
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: CupertinoColors.black)),
+        TextSpan(
+          text: "R\$" + balance.toStringAsFixed(2),
+          style: const TextStyle(color: CupertinoColors.black),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<Widget> getMonthPositiveBalanceText(SummaryCubit cubit) async {
+  DateTime date = cubit.getDate();
+  double balance = await getMonthPositiveBalance(date);
+
+  return RichText(
+    text: TextSpan(
+      children: [
+        const TextSpan(
+            text: "Entradas do mês: ",
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: CupertinoColors.black)),
+        TextSpan(
+          text: "R\$" + balance.toStringAsFixed(2),
+          style: const TextStyle(color: CupertinoColors.systemGreen),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<Widget> getMonthNegativeBalanceText(SummaryCubit cubit) async {
+  DateTime date = cubit.getDate();
+  double balance = await getMonthNegativeBalance(date);
+
+  return RichText(
+    text: TextSpan(
+      children: [
+        const TextSpan(
+            text: "Saídas do mês: ",
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: CupertinoColors.black)),
+        TextSpan(
+          text: "R\$" + balance.abs().toStringAsFixed(2),
+          style: const TextStyle(color: CupertinoColors.systemRed),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget getYearText(SummaryCubit cubit) {
+  DateTime date = cubit.getDate();
+  DateTime now = DateTime.now();
+  print("$date.year $now.year");
+  if (date.year != now.year) {
+    return Text(
+      date.year.toString(),
+      style: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w400,
+          color: CupertinoColors.black),
+    );
+  }
+  return Container();
+}

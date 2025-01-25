@@ -3,14 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment_tracker/src/month/blocs/month_cubit.dart';
 import 'package:payment_tracker/src/month/blocs/month_state.dart';
 import 'package:payment_tracker/src/shared/date_utils.dart';
-import 'package:payment_tracker/src/shared/gasto_utils.dart';
-import 'package:payment_tracker/src/shared/repositories/payment_helper.dart';
+
+import '../shared/repositories/payment_helper.dart';
 import 'month_module.dart';
 
 class Month extends StatefulWidget {
   final DateTime data;
+  final bool isActualMonth;
 
-  const Month(this.data, {super.key});
+  const Month(this.data, this.isActualMonth, {super.key});
 
   @override
   _MonthState createState() => _MonthState();
@@ -18,7 +19,9 @@ class Month extends StatefulWidget {
 
 class _MonthState extends State<Month> {
   late DateTime date;
-  PaymentHelper gastoHelper = PaymentHelper();
+  late bool isActualMonth;
+
+  PaymentHelper paymentHelper = PaymentHelper();
   Widget transactionsList = Container();
   List? toggled;
   MesCubit mesCubit = MesCubit();
@@ -26,6 +29,7 @@ class _MonthState extends State<Month> {
   @override
   void initState() {
     date = widget.data;
+    isActualMonth = widget.isActualMonth;
     mesCubit.changeSaldo(date);
     mesCubit.changeGastos(date);
     super.initState();
@@ -102,7 +106,7 @@ class _MonthState extends State<Month> {
                                             8, 0, 0, 0),
                                         scrollDirection: Axis.horizontal,
                                         child: Text(
-                                            '${state.gastos[index].description}',
+                                            '${state.gastos[index].amount}',
                                             style: const TextStyle(
                                               fontSize: 14.0,
                                             )),
@@ -173,13 +177,6 @@ class _MonthState extends State<Month> {
                                                           }
                                                         },
                                                       ),
-                                                      // Number of parcelas
-                                                      // Text(
-                                                      //   '${state.gastos[index].parcelas}/${getNumberOfParcelasMonth(state.gastos[index])}',
-                                                      //   style: const TextStyle(
-                                                      //     fontSize: 11.0,
-                                                      //   ),
-                                                      // ),
                                                     ],
                                                   )
                                                 : Text(
@@ -196,64 +193,68 @@ class _MonthState extends State<Month> {
                                           ),
 
                                           // -- Editar/excluir
-                                          index == state.index_open
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
+                                          !isActualMonth
+                                              ? Container()
+                                              : index == state.index_open
+                                                  ? Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(
                                                           0, 10, 0, 0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          updateTransaction(
-                                                              state.gastos[
-                                                                  index],
-                                                              mesCubit,
-                                                              date,
-                                                              context);
-                                                          print('Editar');
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              updateTransaction(
+                                                                  state.gastos[
+                                                                      index],
+                                                                  mesCubit,
+                                                                  date,
+                                                                  context);
+                                                              print('Editar');
+                                                            },
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          10.0),
+                                                              child: const Icon(
+                                                                  Icons.edit,
+                                                                  color: Colors
+                                                                      .blue,
+                                                                  size: 22.0),
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              removeMonthGasto(
+                                                                  state.gastos[
+                                                                      index],
+                                                                  context,
+                                                                  mesCubit,
+                                                                  date);
+                                                              print('Excluir');
+                                                            },
+                                                            child:
+                                                                const Padding(
+                                                              padding: EdgeInsets
                                                                   .symmetric(
-                                                                  horizontal:
-                                                                      10.0),
-                                                          child: const Icon(
-                                                              Icons.edit,
-                                                              color:
-                                                                  Colors.blue,
-                                                              size: 22.0),
-                                                        ),
+                                                                      horizontal:
+                                                                          10.0),
+                                                              child: Icon(
+                                                                  Icons.delete,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  size: 22.0),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          removeMonthGasto(
-                                                              state.gastos[
-                                                                  index],
-                                                              context,
-                                                              mesCubit,
-                                                              date);
-                                                          print('Excluir');
-                                                        },
-                                                        child: const Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      10.0),
-                                                          child: Icon(
-                                                              Icons.delete,
-                                                              color: Colors.red,
-                                                              size: 22.0),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : Container(),
+                                                    )
+                                                  : Container(),
                                         ],
                                       )),
                                 ],
@@ -263,61 +264,64 @@ class _MonthState extends State<Month> {
                 ),
 
                 // -- BottomBar
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        offset: Offset(0, 2),
-                        blurRadius: 6.0,
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      // -- Saldo
-                      Expanded(
-                          flex: 7,
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 16.0),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xB02196F3),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(
-                                      color: Colors.blue, width: 1.0),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x019E9E9E),
-                                      offset: Offset(0, 2),
-                                      blurRadius: 6.0,
+                !isActualMonth
+                    ? Container()
+                    : Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black,
+                              offset: Offset(0, 2),
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          children: [
+                            // -- Saldo
+                            Expanded(
+                                flex: 7,
+                                child: Row(
+                                  children: [
+                                    const SizedBox(width: 16.0),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xB02196F3),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        border: Border.all(
+                                            color: Colors.blue, width: 1.0),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color(0x019E9E9E),
+                                            offset: Offset(0, 2),
+                                            blurRadius: 6.0,
+                                          ),
+                                        ],
+                                      ),
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: getBalanceText(state.saldo),
                                     ),
                                   ],
-                                ),
-                                padding: const EdgeInsets.all(16.0),
-                                child: getBalanceText(state.saldo),
-                              ),
-                            ],
-                          )),
+                                )),
 
-                      // -- Adicionar Transação
-                      Expanded(
-                          flex: 3,
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              addTransaction(mesCubit, date, context);
-                              // mesCubit.changeGastos(data);
-                              // mesCubit.changeSaldo(data);
-                            },
-                            backgroundColor: const Color(0xB02196F3),
-                            child: const Icon(Icons.add),
-                          )),
-                    ],
-                  ),
-                ),
+                            // -- Adicionar Transação
+                            Expanded(
+                                flex: 3,
+                                child: FloatingActionButton(
+                                  onPressed: () {
+                                    addTransaction(mesCubit, date, context);
+                                    // mesCubit.changeGastos(data);
+                                    // mesCubit.changeSaldo(data);
+                                  },
+                                  backgroundColor: const Color(0xB02196F3),
+                                  child: const Icon(Icons.add),
+                                )),
+                          ],
+                        ),
+                      ),
               ],
             ),
           );

@@ -34,39 +34,15 @@ Future<double> fetchBalance() async {
 }
 
 Future<double> getMonthBalance(DateTime data) async {
-  List<Payment> payments = await getPaymentsByMonth(data);
-  double total = 0;
-  for (int i = 0; i < payments.length; i++) {
-    total += payments[i].amount;
+  List<Payment> gastos = await getPaymentsByMonth(data);
+  double gastosTotal = 0;
+  for (int i = 0; i < gastos.length; i++) {
+    gastosTotal += gastos[i].amount;
   }
 
   double? balance = await fetchBalance();
 
-  return balance + total;
-}
-
-Future<double> getMonthPositiveBalance(DateTime data) async {
-  List<Payment> payments = await getPaymentsByMonthAndPositiveExpense(data);
-  double gastosTotal = 0;
-  for (int i = 0; i < payments.length; i++) {
-    if (payments[i].amount > 0) {
-      gastosTotal += payments[i].amount;
-    }
-  }
-
-  return gastosTotal;
-}
-
-Future<double> getMonthNegativeBalance(DateTime data) async {
-  List<Payment> payments = await getPaymentsByMonthAndNegativeExpense(data);
-  double total = 0;
-  for (int i = 0; i < payments.length; i++) {
-    if (payments[i].amount < 0) {
-      total += payments[i].amount;
-    }
-  }
-
-  return total;
+  return balance + gastosTotal;
 }
 
 Future<void> updateNewMonthBalance() async {
