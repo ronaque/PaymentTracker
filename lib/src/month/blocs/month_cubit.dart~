@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:payment_tracker/src/month/blocs/month_state.dart';
 import 'package:payment_tracker/src/shared/gasto_utils.dart';
 import 'package:payment_tracker/src/shared/models/payment.dart';
-import 'package:payment_tracker/src/shared/balance_utils.dart';
+import 'package:payment_tracker/src/shared/saldo_utils.dart';
 
 class MesCubit extends Cubit<MesState> {
   MesCubit() : super(MesState());

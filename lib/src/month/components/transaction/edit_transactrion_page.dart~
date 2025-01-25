@@ -70,7 +70,7 @@ class _EditTransactionModalState extends State<EditTransactionModal> {
     String category = _getSelectedTag();
     String descricao = descriptionController.text;
 
-    Tag? tag = await getTagByName(category);
+    Tag? tag = await getTagByNome(category);
     if (tag == null) {
       // Fazer um alerta para o usuário informando que deve escolher uma tag
       const Alerta(text: 'Escolha uma categoria').show(context);

@@ -141,7 +141,7 @@ Future<void> removeMonthGasto(Payment gasto, BuildContext context,
     ).show(context);
 
     if (alerta) {
-      List<Payment> listParcelasGastos = await getInstallmentsPayment(gasto);
+      List<Payment> listParcelasGastos = await getParcelasGasto(gasto);
       listParcelasGastos.forEach((gasto) async {
         await removePaymentById(gasto.id);
         print("Excluindo gasto ${gasto.toString()}");
@@ -173,5 +173,5 @@ Future<void> removeMonthGasto(Payment gasto, BuildContext context,
 }
 
 Future<int> getNumberOfParcelasMonth(Payment gasto) {
-  return getNumberOfInstallments(gasto);
+  return getNumberOfParcelas(gasto);
 }

@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const Home(),
         '/mes': (context) => Month(DateTime.now(), true),
         '/perfil': (context) => const Profile(),
-        '/resumo': (context) => const SummaryPage(),
+        '/resumo': (context) => const Summary(),
       },
     );
   }

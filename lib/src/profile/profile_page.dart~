@@ -173,6 +173,7 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          const Text("Nome:"),
                           SizedBox(width: 250, child: buildNameTextField()),
                         ],
                       )),

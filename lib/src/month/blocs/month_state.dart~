@@ -1,4 +1,4 @@
-import 'package:payment_tracker/src/shared/models/payment.dart';
+import 'package:payment_tracker/src/shared/models/Gasto.dart';
 
 class MesState {
   final int index_open;

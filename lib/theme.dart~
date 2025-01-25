@@ -38,6 +38,17 @@ class AppTheme {
         textTheme: GoogleFonts.poppinsTextTheme(),
         tabBarTheme: TabBarTheme(
           indicatorColor: blueColors[500],
+          // dividerColor: grayColors[50],
+          // labelColor: grayColors[900],
+          // unselectedLabelColor: grayColors[50],
+          // indicatorSize: TabBarIndicatorSize.tab,
+          // indicator: BoxDecoration(
+          //     border: const Border(
+          //         left: BorderSide(color: Color(0xff1565C0)),
+          //         right: BorderSide(color: Color(0xff1565C0)),
+          //         top: BorderSide(color: Color(0xff1565C0)),
+          //         bottom: BorderSide.none),
+          //     color: grayColors[50]),
         ),
         appBarTheme: AppBarTheme(
             backgroundColor: blueColors[500],

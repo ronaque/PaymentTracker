@@ -8,9 +8,9 @@ import 'package:payment_tracker/src/month/components/transaction/components/card
 import 'package:payment_tracker/src/month/components/transaction/components/in_out.dart';
 import 'package:payment_tracker/src/shared/components/alert_dialog.dart';
 import 'package:payment_tracker/src/shared/gasto_utils.dart';
-import 'package:payment_tracker/src/shared/models/Gasto.dart';
-import 'package:payment_tracker/src/shared/models/Tag.dart';
-import 'package:payment_tracker/src/shared/repositories/TagHelper.dart';
+import 'package:payment_tracker/src/shared/models/payment.dart';
+import 'package:payment_tracker/src/shared/models/tag.dart';
+import 'package:payment_tracker/src/shared/repositories/tag_helper.dart';
 import 'package:payment_tracker/src/shared/tag_utils.dart';
 
 class AddTransactionModal extends StatefulWidget {
@@ -58,9 +58,10 @@ class _AddTransactionModalState extends State<AddTransactionModal> {
         0.0;
 
     String category = _getSelectedTag();
+    print("Categoria: $category");
     String description = descriptionController.text;
 
-    Tag? tag = await getTagByNome(category);
+    Tag? tag = await getTagByName(category);
     if (tag == null) {
       // Fazer um alerta para o usuário informando que deve escolher uma tag
       const Alerta(text: 'Escolha uma categoria').show(context);
@@ -75,10 +76,10 @@ class _AddTransactionModalState extends State<AddTransactionModal> {
       amount = amount * -1;
     }
 
-    Gasto gasto =
-        await createGasto(date, amount, tag, description, mode, parcelas);
-    insertGasto(gasto);
-    print('Gasto inserido com sucesso: ${gasto.toString()}');
+    Payment payment =
+        await createPayment(date, amount, tag, description, mode, parcelas);
+    insertPayment(payment);
+    print('Payment inserido com sucesso: ${payment.toString()}');
 
     if (mode == 0) {
       Navigator.pop(context);

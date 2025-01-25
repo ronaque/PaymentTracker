@@ -1,6 +1,6 @@
 import 'package:payment_tracker/src/shared/components/alert_dialog.dart';
-import 'package:payment_tracker/src/shared/models/Tag.dart';
-import 'package:payment_tracker/src/shared/repositories/TagHelper.dart';
+import 'package:payment_tracker/src/shared/models/tag.dart';
+import 'package:payment_tracker/src/shared/repositories/tag_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<Tag> createTag(String nome) async {
@@ -12,11 +12,11 @@ Future<Tag> createTag(String nome) async {
     id++;
   }
   prefs.setInt('tag_id', id);
-  return Tag(id: id, nome: nome);
+  return Tag(id: id, name: nome);
 }
 
 Future<bool> insertTag(Tag tag) async {
-  if (tag.nome.isEmpty) {
+  if (tag.name.isEmpty) {
     print('Nome da tag não pode ser vazio');
     return false;
   }
@@ -36,9 +36,10 @@ Future<List<Tag>> getCustomTags() async {
   return tagHelper.getCustomTags();
 }
 
-Future<Tag?> getTagByNome(String nome) async {
+Future<Tag?> getTagByName(String name) async {
   TagHelper tagHelper = TagHelper();
-  return tagHelper.getTagByNome(nome);
+  print('Getting tag by name: $name');
+  return tagHelper.getTagByName(name);
 }
 
 Future<Tag?> getTagById(int tagId) async {

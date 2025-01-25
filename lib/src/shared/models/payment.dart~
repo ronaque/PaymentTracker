@@ -1,4 +1,4 @@
-import 'package:payment_tracker/src/shared/models/Tag.dart';
+import 'package:payment_tracker/src/shared/models/tag.dart';
 
 /// Class representing an expense
 /// id: Unique identifier of the expense
@@ -9,50 +9,50 @@ import 'package:payment_tracker/src/shared/models/Tag.dart';
 /// mode: Payment method (0 - cash, 1 - installment, 2 - subscription)
 /// parcelas: Number of installments (if the expense is paid in installments)
 
-class Gasto {
+class Payment {
   int id;
-  DateTime data;
-  double quantidade;
+  DateTime date;
+  double amount;
   Tag tag;
-  String? descricao;
+  String? description;
   int mode;
-  int? parcelas;
+  int? installments;
 
-  Gasto({
+  Payment({
     required this.id,
-    required this.data,
-    required this.quantidade,
+    required this.date,
+    required this.amount,
     required this.tag,
-    this.descricao,
+    this.description,
     required this.mode,
-    this.parcelas,
+    this.installments,
   });
 
   // Converte um objeto Gasto em um Map para persistir no banco de dados
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'data': data.toIso8601String(),
-      'quantidade': quantidade,
+      'date': date.toIso8601String(),
+      'amount': amount,
       'tag_id': tag.id, // Salva o ID da tag associada
-      'descricao': descricao,
+      'description': description,
       'mode': mode,
-      'parcelas': parcelas
+      'installments': installments
     };
   }
 
   // Construtor que converte um Map em um objeto Gasto
-  Gasto.fromMap(Map<String, dynamic> map)
+  Payment.fromMap(Map<String, dynamic> map)
       : id = map['id'],
-        data = DateTime.parse(map['data']),
-        quantidade = map['quantidade'],
+        date = DateTime.parse(map['date']),
+        amount = map['amount'],
         tag = Tag.fromMap({'id': map['tag_id'], 'nome': map['tag_nome']}),
-        descricao = map['descricao'], // Agora pode ser nulo
+        description = map['description'], // Agora pode ser nulo
         mode = map['mode'],
-        parcelas = map['parcelas'];
+        installments = map['installments'];
 
   @override
   String toString() {
-    return 'Gasto{id: $id, data: $data, quantidade: $quantidade, tag: ${tag.toString()}, descricao: $descricao, mode: $mode, parcelas: $parcelas}';
+    return 'Payment{id: $id, date: $date, amount: $amount, tag: ${tag.toString()}, description: $description, mode: $mode, installments: $installments}';
   }
 }
